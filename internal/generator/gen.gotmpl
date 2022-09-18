@@ -1,0 +1,66 @@
+package {{$.Package}}
+
+import (
+    "github.com/apack/wx"
+)
+
+
+type view struct {
+	name string
+	css  *wx.ViewCSS
+	ssr  *wx.ViewSSR
+	dom  *wx.ViewDOM
+}
+
+func (v view) Name() string {
+	return v.name
+}
+
+func (v view) CSS() *wx.ViewCSS {
+	return v.css
+}
+
+func (v view) SSR() *wx.ViewSSR {
+	return v.ssr
+}
+
+func (v view) DOM() *wx.ViewDOM {
+	return v.dom
+}
+
+
+{{ if $.Views }}
+var (
+    {{ range $i, $v := $.Views }}
+    {{ $v.Name }} = view{
+        name: "{{$v.Name}}",
+        css:  &wx.ViewCSS{
+            FileName: "{{$v.CSSHash}}.css",
+            Style: {{ $v.CSS | printBinary }},
+        },
+        ssr:  &wx.ViewSSR{
+            Script: {{ $v.SSR | printBinary }},
+        },
+        dom:  &wx.ViewDOM{
+            FileName: "{{$v.CSSHash}}.js",
+            Script: {{ $v.DOM | printBinary }},
+        },
+    }
+    {{ end }}
+)
+{{ end }}
+
+//go:embed static
+var static embed.FS
+
+func Load(web *wx.Router) error {
+	err := web.RegisterViews(
+    {{- range $i, $v := $.Views -}}
+    {{ $v.Name }},
+    {{- end -}}
+    )
+	if err != nil {
+		return err
+	}
+	return web.Static(static)
+}

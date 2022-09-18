@@ -1,0 +1,10 @@
+{
+  "name": "wx",
+  "version": "0.0.0",
+  "author": "APack",
+  "license": "MIT",
+  "devDependencies": {
+    "svelte": "^3.50.0",
+    "svelte-preprocess": "^4.10.7"
+  }
+}
