@@ -7,7 +7,7 @@ require (
 	github.com/spf13/cobra v1.5.0
 	go.kuoruan.net/v8go-polyfills v0.5.1-0.20220727011656-c74c5b408ebd
 	golang.org/x/tools v0.1.12
-	rogchap.com/v8go v0.7.0
+	rogchap.com/v8go v0.8.0
 )
 
 require (

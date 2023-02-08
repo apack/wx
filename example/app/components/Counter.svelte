@@ -2,6 +2,27 @@
   import Button from "./Button.svelte";
 
   export let count = 0;
+  const increase = () => {
+    fetch("/api/increase", { method: "POST" })
+      .then((res) => res.json())
+      .then((data) => {
+        count = data.count;
+      });
+  };
+  const decrease = () => {
+    fetch("/api/decrease", { method: "POST" })
+      .then((res) => res.json())
+      .then((data) => {
+        count = data.count;
+      });
+  };
+  setInterval(() => {
+    fetch("/api/count")
+      .then((res) => res.json())
+      .then((data) => {
+        count = data.count;
+      });
+  }, 100);
 </script>
 
 <style>
@@ -30,7 +51,7 @@
 <div class="counter">
   <div class="value">{count}</div>
   <div class="actions">
-    <Button on:click={() => count--}>-</Button>
-    <Button on:click={() => count++}>+</Button>
+    <Button on:click={decrease}>-</Button>
+    <Button on:click={increase}>+</Button>
   </div>
 </div>

@@ -45,6 +45,7 @@ func (c *Compiler) SSR(path string, code []byte) (*SSR, error) {
 	if err := json.Unmarshal([]byte(result), out); err != nil {
 		return nil, err
 	}
+	out.JS = ";function setInterval(){};function setTimeout(){};" + out.JS
 	return out, nil
 }
 

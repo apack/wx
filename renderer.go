@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"strings"
-	"sync"
 
 	v8 "github.com/apack/wx/internal/js/v8"
 	"github.com/apack/wx/internal/ssr"
@@ -186,13 +185,10 @@ func (w *RenderWorker) Close() error {
 }
 
 type RenderEngine struct {
-	wm  map[View]*RenderWorker
-	mtx sync.Mutex
+	wm map[View]*RenderWorker
 }
 
 func (e *RenderEngine) Close() {
-	e.mtx.Lock()
-	defer e.mtx.Unlock()
 	for _, w := range e.wm {
 		w.Close()
 	}
@@ -205,8 +201,6 @@ func NewRenderEngine() *RenderEngine {
 }
 
 func (e *RenderEngine) RegisterViews(views ...View) error {
-	e.mtx.Lock()
-	defer e.mtx.Unlock()
 	var err error
 	for _, view := range views {
 		if view == nil {
@@ -224,9 +218,7 @@ func (e *RenderEngine) RegisterViews(views ...View) error {
 }
 
 func (e *RenderEngine) Render(view View, props Props) ([]byte, error) {
-	e.mtx.Lock()
 	w, ok := e.wm[view]
-	e.mtx.Unlock()
 	if !ok {
 		return nil, fmt.Errorf("wx: view %q is not registered", view.Name())
 	}

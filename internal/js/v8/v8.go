@@ -6,7 +6,6 @@ import (
 	"github.com/apack/wx/internal/js"
 	"go.kuoruan.net/v8go-polyfills/console"
 	"go.kuoruan.net/v8go-polyfills/fetch"
-	"go.kuoruan.net/v8go-polyfills/timers"
 	"go.kuoruan.net/v8go-polyfills/url"
 	"rogchap.com/v8go"
 )
@@ -32,11 +31,11 @@ func load() (*v8go.Isolate, *v8go.Context, error) {
 		return nil, nil, err
 	}
 	// setTimeout/setInterval support
-	if err := timers.InjectTo(isolate, global); err != nil {
-		isolate.TerminateExecution()
-		isolate.Dispose()
-		return nil, nil, err
-	}
+	// if err := timers.InjectTo(isolate, global); err != nil {
+	// 	isolate.TerminateExecution()
+	// 	isolate.Dispose()
+	// 	return nil, nil, err
+	// }
 	// Create the context
 	context := v8go.NewContext(isolate, global)
 	// URL support
@@ -115,6 +114,7 @@ func (vm *VM) Eval(path, expr string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	defer value.Release()
 	// // Handle promises
 	// if value.IsPromise() {
 	// 	prom, err := value.AsPromise()

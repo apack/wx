@@ -46,6 +46,10 @@ var __svelte__ = (() => {
   var window = {
     btoa: (data2) => {
       return "";
+    },
+    setTimeout: (...args) => {
+    },
+    setInterval: (...args) => {
     }
   };
 
